@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:http/http.dart' as http;
 import 'package:movie_app/common/utils.dart';
 import 'package:movie_app/models/movie_model.dart';
 
@@ -73,5 +76,63 @@ class ApiServices {
       movie3
     ];
     return movies;
+  }
+
+  Future<Result> getNowPlayingMovies() async {
+    var endPoint = 'movie/now_playing';
+    final url = '$baseUrl$endPoint$key';
+
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      return Result.fromJson(jsonDecode(response.body));
+    }
+    throw Exception('failed to load now playing movies');
+  }
+
+  Future<Result> getPopularMovies() async {
+    var endPoint = 'movie/popular';
+    final url = '$baseUrl$endPoint$key';
+
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      return Result.fromJson(jsonDecode(response.body));
+    }
+    throw Exception('failed to load popular movies');
+  }
+
+  Future<Result> getUpcomingMovies() async {
+    var endPoint = 'movie/upcoming';
+    final url = '$baseUrl$endPoint$key';
+
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      return Result.fromJson(jsonDecode(response.body));
+    }
+    throw Exception('failed to load upcoming movies');
+  }
+
+  Future<Result> getTopRatedMovies() async {
+    var endPoint = 'movie/top_rated';
+    final url = '$baseUrl$endPoint$key';
+
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      return Result.fromJson(jsonDecode(response.body));
+    }
+    throw Exception('failed to load top rated movies');
+  }
+
+  Future<Result> getSearchedMovie(String searchText) async {
+    final endPoint = 'search/movie?query=$searchText';
+    final url = '$baseUrl$endPoint';
+    final response = await http.get(Uri.parse(url), headers: {
+      'Authorization':
+          'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJkNTdhOTljNDVhMDYyNDFlYjUwNDFhZDEzMDMyNzVlNiIsIm5iZiI6MTcyNjA5MDQ5MC42ODEzNDcsInN1YiI6IjY2ZTIwOTEyMDAwMDAwMDAwMGI3ODMyMCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.PyHPgAvhPNR3OCSVZ8oZEKe6BUwwlltTLQ7I6Xsp5ow'
+    });
+    if (response.statusCode == 200) {
+      final movies = Result.fromJson(jsonDecode(response.body));
+      return movies;
+    }
+    throw Exception('failed to load  search movie ');
   }
 }

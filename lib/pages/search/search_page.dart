@@ -1,5 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:movie_app/models/movie_model.dart';
+import 'package:movie_app/pages/top_rated/widgets/top_rated_movie.dart';
+import 'package:movie_app/services/api_services.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -9,6 +12,9 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
+  final ApiServices apiServices = ApiServices();
+  var searchInput = '';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,13 +39,48 @@ class _SearchPageState extends State<SearchPage> {
                   ),
                   style: const TextStyle(color: Colors.white),
                   backgroundColor: Colors.grey.withOpacity(0.3),
-                  onChanged: (value) {},
+                  onChanged: (value) {
+                    setState(() {
+                      searchInput = value;
+                    });
+                  },
                 ),
               ),
               const SizedBox(
                 height: 10,
               ),
-              const Text('Search')
+              FutureBuilder<Result>(
+                future: apiServices.getSearchedMovie(searchInput),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  if (snapshot.hasError) {
+                    return Center(
+                      child: Text('Error: ${snapshot.error}'),
+                    );
+                  }
+                  if(snapshot.hasData && snapshot.data!.movies.isEmpty) {
+                    return const Center(
+                      child: Text('No data found'),
+                    );
+                  }
+                  if (snapshot.hasData) {
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: snapshot.data!.movies.length,
+                      itemBuilder: (context, index) {
+                          return TopRatedMovie(movie: snapshot.data!.movies[index]);
+                      },
+                    );
+                  }
+                  return const Center(
+                    child: Text('No data found'),
+                  );
+                },
+              ),
             ],
           ),
         ),

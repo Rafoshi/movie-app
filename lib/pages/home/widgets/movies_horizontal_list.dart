@@ -8,15 +8,18 @@ class MoviesHorizontalList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 28, vertical: 10),
-      height: 230,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: movies.length,
-        itemBuilder: (context, index) {
-          return MovieHorizontalItem(movie: movies[index]);
-        },
+    return GestureDetector(
+      onTap: () {},
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 28, vertical: 10),
+        height: 230,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: movies.length,
+          itemBuilder: (context, index) {
+            return MovieHorizontalItem(movie: movies[index]);
+          },
+        ),
       ),
     );
   }

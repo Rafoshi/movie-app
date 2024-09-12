@@ -12,11 +12,11 @@ class TopRatedPage extends StatefulWidget {
 
 class _TopRatedPageState extends State<TopRatedPage> {
   ApiServices apiServices = ApiServices();
-  late Future<List<Movie>> moviesFuture;
+  late Future<Result> moviesFuture;
 
   @override
   void initState() {
-    moviesFuture = apiServices.getMovies();
+    moviesFuture = apiServices.getTopRatedMovies();
     super.initState();
   }
 
@@ -26,7 +26,7 @@ class _TopRatedPageState extends State<TopRatedPage> {
       appBar: AppBar(
         title: const Text('Top Rated Movies'),
       ),
-      body: FutureBuilder<List<Movie>>(
+      body: FutureBuilder<Result>(
           future: moviesFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -41,9 +41,9 @@ class _TopRatedPageState extends State<TopRatedPage> {
             }
             if (snapshot.hasData) {
               return ListView.builder(
-                itemCount: snapshot.data!.length,
+                itemCount: snapshot.data!.movies.length,
                 itemBuilder: (context, index) {
-                  return TopRatedMovie(movie: snapshot.data![index]);
+                  return TopRatedMovie(movie: snapshot.data!.movies[index]);
                 },
               );
             }
